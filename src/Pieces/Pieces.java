@@ -6,23 +6,26 @@ package Pieces;
 public class Pieces
 {
     static private String board[][] = new String[8][8];
+    static private int games;
 
     static private String TEAM_ATTACKED;
     static private String KING_ATTACKED;
 
-    static private Boolean is_in_check = false;
+    static private Boolean is_in_check  = false;
 
-    static private final String KING = "K";
-    static private final String QUEEN = "Q";
-    static private final String BISHOP = "B";
-    static private final String KNIGHT = "N";
-    static private final String ROOK = "R";
-    static private final String PAWN = "P";
-    static private final String EMPTY = ".";
+    static private final String KING    = "K";
+    static private final String QUEEN   = "Q";
+    static private final String BISHOP  = "B";
+    static private final String KNIGHT  = "N";
+    static private final String ROOK    = "R";
+    static private final String PAWN    = "P";
+    static private final String EMPTY   = ".";
 
-    public static void test_attacks(String[][] board)
+    public static void test_attacks(String[][] board, int game)
     {
         Pieces.board = board;
+        games = game;
+        is_in_check = false;
         for (int i = 0; i < 8; i++)
         {
             int line = i;
@@ -51,7 +54,6 @@ public class Pieces
                 {
                     Bishop bishop = new Bishop();
                     attack(pos, line, bishop.directions, bishop.squares, bishop.move, BISHOP);
-
                 }
                 else if (piece_type.equalsIgnoreCase(KNIGHT))
                 {
@@ -74,7 +76,7 @@ public class Pieces
         }
         if (!is_in_check)
         {
-            System.out.println("No King is in check.");
+            System.out.println("Game #"+games+": No King is in check.");
         }
     }
 
@@ -98,7 +100,7 @@ public class Pieces
                     {
                         if (is_in_check(piece))
                         {
-                            System.out.println(TEAM_ATTACKED + " King is in check!");
+                            System.out.println("Game #"+games+": " + TEAM_ATTACKED + " King is in check!");
                         }
                         else if (!piece_type.equals("Knight"))
                         {
