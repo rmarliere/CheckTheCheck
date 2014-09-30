@@ -6,5 +6,4 @@ package Pieces;
 public class Queen extends King
 {
     public int squares = 8;
-    public int directions = 8;
 }
