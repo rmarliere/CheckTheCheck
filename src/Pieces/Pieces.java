@@ -1,7 +1,10 @@
 package Pieces;
 
 /**
- * Created by RodrigoMarliere on 9/27/14.
+ * Author: Rodrigo Marliere
+ * Revision date: 10/1/14
+ * Assignment: CheckTheCheck
+ * Class: CSCD 350
  */
 
 public class Pieces
