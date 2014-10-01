@@ -15,7 +15,11 @@ public class Pawn extends Pieces
                                 {-1, -1}};
     public int move[][] = {};
 
-
+    /**
+     * It will decide which move to use for the pawn
+     *
+     * @param team_attacked - The team that is being attacked
+     */
     public Pawn(String team_attacked)
     {
         if (team_attacked.equals("Black"))

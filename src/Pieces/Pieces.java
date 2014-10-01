@@ -3,15 +3,16 @@ package Pieces;
 /**
  * Created by RodrigoMarliere on 9/27/14.
  */
+
 public class Pieces
 {
     static private String board[][] = new String[8][8];
     static private int games;
 
-    static private String TEAM_ATTACKED;
-    static private String KING_ATTACKED;
+    static private String team_attacked;
+    static private String king_attacked;
 
-    static private Boolean is_in_check  = false;
+    static private Boolean IsInCheck = false;
 
     static private final String KING    = "K";
     static private final String QUEEN   = "Q";
@@ -21,86 +22,104 @@ public class Pieces
     static private final String PAWN    = "P";
     static private final String EMPTY   = ".";
 
-    public static void test_attacks(String[][] board, int game)
+    /**
+     * This method will iterate through each row and column getting each piece, identifying it and trying to tryTheAttack
+     * the opposite king. For each piece it will call the method attack.
+     *
+     * @param board - The board object from the input with rows and columns.
+     * @param game - An integer that will increment for each board sent to this method
+     */
+    public static void tryTheAttack(String[][] board, int game)
     {
         Pieces.board = board;
-        games = game;
-        is_in_check = false;
-        for (int i = 0; i < 8; i++)
+        Pieces.games = game;
+        IsInCheck = false;
+        for (int row = 0; row < 8; row++)
         {
-            int line = i;
-            for (int k = 0; k < 8; k++)
+            for (int column = 0; column < 8; column++)
             {
-                int pos = k;
-                String piece_type = board[i][k];
-                set_team_and_king(piece_type);
+                String piece_type = board[row][column];
+                setTeamAndKing(piece_type);
 
                 if (piece_type.equalsIgnoreCase(KING))
                 {
                     King king = new King();
-                    attack(pos, line, king.directions, king.squares, king.move, KING);
+                    attack(column, row, king.directions, king.squares, king.move, KING);
                 }
                 else if (piece_type.equalsIgnoreCase(QUEEN))
                 {
                     Queen queen = new Queen();
-                    attack(pos, line, queen.directions, queen.squares, queen.move, QUEEN);
+                    attack(column, row, queen.directions, queen.squares, queen.move, QUEEN);
                 }
                 else if (piece_type.equalsIgnoreCase(ROOK))
                 {
                     Rook rook = new Rook();
-                    attack(pos, line, rook.directions, rook.squares, rook.move, ROOK);
+                    attack(column, row, rook.directions, rook.squares, rook.move, ROOK);
                 }
                 else if (piece_type.equalsIgnoreCase(BISHOP))
                 {
                     Bishop bishop = new Bishop();
-                    attack(pos, line, bishop.directions, bishop.squares, bishop.move, BISHOP);
+                    attack(column, row, bishop.directions, bishop.squares, bishop.move, BISHOP);
                 }
                 else if (piece_type.equalsIgnoreCase(KNIGHT))
                 {
                     Knight knight = new Knight();
-                    attack(pos, line, knight.directions, knight.squares, knight.move, KNIGHT);
+                    attack(column, row, knight.directions, knight.squares, knight.move, KNIGHT);
                 }
                 else if (piece_type.equalsIgnoreCase(PAWN))
                 {
-                    Pawn pawn = new Pawn(TEAM_ATTACKED);
-                    attack(pos, line, pawn.directions, pawn.squares, pawn.move, PAWN);
+                    Pawn pawn = new Pawn(team_attacked);
+                    attack(column, row, pawn.directions, pawn.squares, pawn.move, PAWN);
                 }
 
                 //if is in check, break both for loops
-                if (is_in_check)
+                if (IsInCheck)
                 {
-                    i = 8;
+                    row = 8;
                     break;
                 }
             }
         }
-        if (!is_in_check)
+        if (!IsInCheck)
         {
             System.out.println("Game #"+games+": No King is in check.");
         }
     }
 
-    public static boolean attack(int position, int line, int directions, int squares, int move[][], String piece_type)
+    /**
+     *
+     *
+     *
+     * @param column - The column the piece is from the start
+     * @param row - The row the piece is from the start
+     * @param directions - How many directions it should go
+     * @param squares - How many squares the piece can move
+     * @param move - The piece's movement pattern
+     * @param piece_type - The kind of piece
+     *
+     * @return - It will return false if the king is not in check.
+     */
+    public static boolean attack(int column, int row, int directions, int squares, int move[][], String piece_type)
     {
         //test for each direction
-        for (int i = 0; i < directions; i++)
+        for (int direction = 0; direction < directions; direction++)
         {
             //get how many squares it can go
-            int new_position    = position;
-            int new_line        = line;
-            for (int k = 0; k < squares; k++)
+            int new_column    = column;
+            int new_row        = row;
+            for (int moves = 0; moves < squares; moves++)
             {
-                new_position    = get_position(i, new_position, move);
-                new_line        = get_line(i, new_line, move);
+                new_column    = getColumn(direction, new_column, move);
+                new_row        = getRow(direction, new_row, move);
                 //valid position
-                if (is_valid_position(new_position, new_line))
+                if (isValidPosition(new_column, new_row))
                 {
-                    String piece = board[new_line][new_position];
-                    if (!is_empty_position(piece))
+                    String piece = board[new_row][new_column];
+                    if (!isEmptyPosition(piece))
                     {
-                        if (is_in_check(piece))
+                        if (isInCheck(piece))
                         {
-                            System.out.println("Game #"+games+": " + TEAM_ATTACKED + " King is in check!");
+                            System.out.println("Game #"+games+": " + team_attacked + " King is in check!");
                         }
                         else if (!piece_type.equals("Knight"))
                         {
@@ -113,56 +132,96 @@ public class Pieces
         return false;
     }
 
-    public static void set_team_and_king(String piece)
+    /**
+     * This method will set the opposite team and king based on the param piece
+     *
+     * @param piece - The piece that is attacking.
+     */
+    private static void setTeamAndKing(String piece)
     {
         char ch = piece.charAt(0);
         if (!piece.equals(EMPTY))
         {
             if (Character.isUpperCase(ch))
             {
-                TEAM_ATTACKED = "Black";
-                KING_ATTACKED = "k";
+                team_attacked = "Black";
+                king_attacked = "k";
             }
             else
             {
-                TEAM_ATTACKED = "White";
-                KING_ATTACKED = "K";
+                team_attacked = "White";
+                king_attacked = "K";
             }
         }
     }
 
-    //helpers
-    public static int get_position(int i, int position, int move[][])
+    /**
+     * This method will return the next column move based on direction, column and movement pattern
+     *
+     * @param direction - The direction the piece is testing
+     * @param column - The column where the piece is
+     * @param move - The piece's movement pattern
+     *
+     * @return - It will return the new column value
+     */
+    private static int getColumn(int direction, int column, int move[][])
     {
-        position = position + move[i][0];
-        return position;
+        column = column + move[direction][0];
+        return column;
     }
 
-    public static int get_line(int i, int line, int move[][])
+    /**
+     * This method will return the next row move
+     *
+     * @param direction - The direction the piece is testing
+     * @param row - The row where the piece is
+     * @param move - The piece's movement pattern
+     *
+     * @return - It will return the new row value
+     */
+    private static int getRow(int direction, int row, int move[][])
     {
-        line = line + move[i][1];
-        return line;
+        row = row + move[direction][1];
+        return row;
     }
 
-    public static boolean is_valid_position(int pos, int line)
+    /**
+     * It will check if the new piece's position is out of the board
+     *
+     * @param column - Piece's column
+     * @param row - Piece's row
+     *
+     * @return - It will return true if the position is valid
+     */
+    private static boolean isValidPosition(int column, int row)
     {
-        if (pos > 7 || pos < 0 || line > 7 || line < 0)
+        return !(column > 7 || column < 0 || row > 7 || row < 0);
+    }
+
+    /**
+     * It will check if the new position is empty
+     *
+     * @param position - The position
+     *
+     * @return - It will return true if the position is empty
+     */
+    private static boolean isEmptyPosition(String position)
+    {
+        return position.equals(EMPTY);
+    }
+
+    /**
+     * It will check if the king is on check
+     *
+     * @param piece - The piece being attacked
+     *
+     * @return - It will return true if the king is on check
+     */
+    private static boolean isInCheck(String piece)
+    {
+        if (piece.equals(king_attacked))
         {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean is_empty_position(String piece)
-    {
-        return piece.equals(EMPTY);
-    }
-
-    public static boolean is_in_check(String piece)
-    {
-        if (piece.equals(KING_ATTACKED))
-        {
-            is_in_check = true;
+            IsInCheck = true;
             return true;
         }
         return false;

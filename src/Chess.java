@@ -10,11 +10,15 @@ public class Chess {
 
     static private String board[][] = new String[8][8];
 
+    /**
+     * This method reads the file on the input and put the board into object board.
+     * After the board is complete, it will call the method tryTheAttack.
+     *
+     * @param args
+     * @throws java.io.FileNotFoundException
+     */
     public static void main(String args[]) throws FileNotFoundException
     {
-        //String filename = args[0];
-        //System.out.println(filename);
-        //String filename = System.in;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = null;
         String newLine = "";
@@ -25,12 +29,12 @@ public class Chess {
             while ((line = reader.readLine()) != null) {
                 String board_line[] = new String[8];
                 line = line.replaceAll("\\s+",""); //remove whitespaces
-                for (int i = 0; i < line.length(); i++)
+                for (int line_char = 0; line_char < line.length(); line_char++)
                 {
-                    if (line.charAt(i) != ' ')
+                    if (line.charAt(line_char) != ' ')
                     {
-                        newLine = newLine + line.charAt(i);
-                        board_line[i] = (String.valueOf(line.charAt(i)));
+                        newLine = newLine + line.charAt(line_char);
+                        board_line[line_char] = (String.valueOf(line.charAt(line_char)));
                     }
                 }
                 if (line.length() == 8)
@@ -41,7 +45,7 @@ public class Chess {
                     {
                         games++;
                         lines = 0;
-                        Pieces.test_attacks(board, games);
+                        Pieces.tryTheAttack(board, games);
                     }
                 }
             }
