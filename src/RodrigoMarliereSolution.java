@@ -9,7 +9,7 @@ import Pieces.*;
 
 import java.io.*;
 
-public class Chess {
+public class RodrigoMarliereSolution {
 
     static private String board[][] = new String[8][8];
 
