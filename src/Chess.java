@@ -31,7 +31,8 @@ public class Chess {
         try {
             while ((line = reader.readLine()) != null) {
                 String board_line[] = new String[8];
-                line = line.replaceAll("\\s+",""); //remove whitespaces
+                //remove whitespaces
+                line = line.replaceAll("\\s+","");
                 for (int line_char = 0; line_char < line.length(); line_char++)
                 {
                     if (line.charAt(line_char) != ' ')
