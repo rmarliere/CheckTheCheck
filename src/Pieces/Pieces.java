@@ -122,7 +122,7 @@ public class Pieces
                     {
                         if (isInCheck(piece))
                         {
-                            System.out.println("Game #"+games+": " + team_attacked + " King is in check!");
+                            System.out.println("Game #"+games+": " + team_attacked + " King is in check.");
                         }
                         else if (!piece_type.equals("Knight"))
                         {
